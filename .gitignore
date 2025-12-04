@@ -1,0 +1,76 @@
+# ============================
+# Node & React Common Ignores
+# ============================
+
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+logs/
+*.log
+
+# Dotenv files (environment variables)
+.env
+.env.*
+!.env.example
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Cache
+.cache/
+.eslintcache
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Coverage reports
+coverage/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# IDE files
+.idea/
+*.iml
+
+# Misc
+*.bak
+*.swp
+
+# React specific
+public/static/
+public/robots.txt
+public/asset-manifest.json
+
+# Testing
+jest-cache/
+jest-html-reporters-*.html
+
+# TypeScript
+*.tsbuildinfo
+
+# Docker
+docker-compose.override.yml
+
+# Firebase / AWS / GCP keys (never commit)
+*.key
+*.pem
+
+# Local development
+*.local
