@@ -17,8 +17,12 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 // API Routes
+console.log('Mounting contact routes at /api/contact');
 app.use("/api/contact", contactRoutes);
+console.log('Contact routes mounted successfully');
+console.log('Mounting quote routes at /api/quotes');
 app.use("/api/quotes", quoteRoutes);
+console.log('Quote routes mounted successfully');
 
 app.get("/", (req, res) => {
   res.send("Contact API is running...");
