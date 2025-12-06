@@ -13,8 +13,8 @@ const QuoteSchema = new mongoose.Schema(
     requirements: { type: String },
     status: { 
       type: String, 
-      enum: ['pending', 'reviewed', 'quoted', 'confirmed', 'completed', 'cancelled'], 
-      default: 'pending' 
+      enum: ['New', 'Pending', 'Resolved'], 
+      default: 'New' 
     },
     priority: { 
       type: String, 

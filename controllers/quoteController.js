@@ -155,7 +155,7 @@ exports.updateQuoteStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    const validStatuses = ['pending', 'reviewed', 'quoted', 'confirmed', 'completed', 'cancelled'];
+    const validStatuses = ['New', 'Pending', 'Resolved'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: "Invalid status" });
     }
@@ -220,6 +220,61 @@ exports.getQuoteStats = async (req, res) => {
 
   } catch (error) {
     console.error("Error fetching quote stats:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Update quote (for admin purposes)
+exports.updateQuote = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    // Remove fields that shouldn't be updated via this endpoint
+    delete updateData._id;
+    delete updateData.createdAt;
+    delete updateData.__v;
+
+    const quote = await Quote.findByIdAndUpdate(
+      id, 
+      updateData, 
+      { new: true, runValidators: true }
+    );
+
+    if (!quote) {
+      return res.status(404).json({ error: "Quote not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Quote updated successfully",
+      data: quote
+    });
+
+  } catch (error) {
+    console.error("Error updating quote:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Delete quote (for admin purposes)
+exports.deleteQuote = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const quote = await Quote.findByIdAndDelete(id);
+
+    if (!quote) {
+      return res.status(404).json({ error: "Quote not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Quote deleted successfully"
+    });
+
+  } catch (error) {
+    console.error("Error deleting quote:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

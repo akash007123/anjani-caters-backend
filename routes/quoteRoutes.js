@@ -5,7 +5,9 @@ const {
   getQuote, 
   getAllQuotes, 
   updateQuoteStatus, 
-  getQuoteStats 
+  getQuoteStats,
+  updateQuote,
+  deleteQuote
 } = require("../controllers/quoteController");
 
 const router = express.Router();
@@ -19,5 +21,7 @@ router.get("/", getAllQuotes);
 router.get("/stats", getQuoteStats);
 router.get("/:id", getQuote);
 router.patch("/:id/status", updateQuoteStatus);
+router.put("/:id", updateQuote);
+router.delete("/:id", deleteQuote);
 
 module.exports = router;
