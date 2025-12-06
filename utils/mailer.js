@@ -76,7 +76,7 @@ const sendMail = async (formData) => {
               <ul style="color: #666; margin: 10px 0; padding-left: 20px;">
                 <li>Our team will review your inquiry within 2-4 hours</li>
                 <li>We'll get back to you with a personalized response</li>
-                <li>If urgent, feel free to call us at +91 12345 67890</li>
+                <li>If urgent, feel free to call us at +91 96855 33878</li>
               </ul>
             </div>
             
@@ -103,7 +103,7 @@ const sendMail = async (formData) => {
           <h3 style="margin: 0 0 10px 0; color: white;">Anjani Caters</h3>
           <p style="margin: 5px 0; font-size: 14px;">Premium Catering Services for Extraordinary Events</p>
           <p style="margin: 5px 0; font-size: 12px; color: #ccc;">
-            📧 info@elitecatering.com | 📞 +91 12345 67890 | 📍 Mumbai, India
+            📧 akashraikwar763@gmail.com | 📞 +91 96855 33878 | 📍 Chhatarpur, Madhya Pradesh, India
           </p>
           <p style="margin: 15px 0 0 0; font-size: 11px; color: #999;">
             This is an automated confirmation. Please do not reply to this email.

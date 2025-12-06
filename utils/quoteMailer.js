@@ -223,7 +223,7 @@ const sendQuoteMail = async (formData) => {
           <h3 style="margin: 0 0 15px 0; color: white;">Anjani Caters 🌟</h3>
           <p style="margin: 5px 0; font-size: 16px;">Creating Unforgettable Culinary Experiences</p>
           <p style="margin: 5px 0; font-size: 14px; color: #ccc;">
-            📧 info@anjanicaters.com | 📞 +91 12345 67890 | 📍 Mumbai, India
+            📧 akashraikwar763@gmail.com | 📞 +91 96855 33878 | 📍 Chhatarpur, Madhya Pradesh, India
           </p>
           <p style="margin: 15px 0 0 0; font-size: 12px; color: #999;">
             This is an automated confirmation. Please do not reply to this email.
