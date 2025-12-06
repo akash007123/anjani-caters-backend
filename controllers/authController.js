@@ -14,7 +14,7 @@ const generateToken = (id) => {
 // @access  Public (should be restricted in production)
 const register = async (req, res) => {
     try {
-        const { firstName, lastName, email, mobile, password, role } = req.body;
+        const { firstName, lastName, email, mobile, password, role, profilePic } = req.body;
 
         // Check if user exists
         const userExists = await User.findOne({ email });
@@ -34,7 +34,8 @@ const register = async (req, res) => {
             email,
             mobile,
             password: hashedPassword,
-            role: role || 'Admin'
+            role: role || 'Admin',
+            profilePic: profilePic || ''
         });
 
         if (user) {
@@ -46,6 +47,7 @@ const register = async (req, res) => {
                     lastName: user.lastName,
                     email: user.email,
                     role: user.role,
+                    profilePic: user.profilePic,
                     token: generateToken(user._id)
                 }
             });
