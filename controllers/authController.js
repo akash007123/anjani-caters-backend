@@ -131,9 +131,100 @@ const logout = async (req, res) => {
     }
 };
 
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+const updateProfile = async (req, res) => {
+    try {
+        const { firstName, lastName, email, mobile, profilePic } = req.body;
+        
+        // Find user by ID
+        const user = await User.findById(req.user.id);
+        
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        
+        // Check if email is already taken by another user
+        if (email && email !== user.email) {
+            const emailExists = await User.findOne({ email, _id: { $ne: user._id } });
+            if (emailExists) {
+                return res.status(400).json({ success: false, message: 'Email already exists' });
+            }
+        }
+        
+        // Update user fields
+        if (firstName) user.firstName = firstName;
+        if (lastName) user.lastName = lastName;
+        if (email) user.email = email;
+        if (mobile) user.mobile = mobile;
+        if (profilePic !== undefined) user.profilePic = profilePic;
+        
+        await user.save();
+        
+        res.status(200).json({
+            success: true,
+            data: {
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                mobile: user.mobile,
+                role: user.role,
+                profilePic: user.profilePic,
+                isActive: user.isActive,
+                lastLogin: user.lastLogin
+            },
+            message: 'Profile updated successfully'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+// @desc    Update user password
+// @route   PUT /api/auth/password
+// @access  Private
+const updatePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        
+        // Get user with password
+        const user = await User.findById(req.user.id).select('+password');
+        
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        
+        // Check if current password is correct
+        if (!(await user.matchPassword(currentPassword))) {
+            return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+        }
+        
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        
+        // Update password
+        user.password = hashedPassword;
+        await user.save();
+        
+        res.status(200).json({
+            success: true,
+            message: 'Password updated successfully'
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
 module.exports = {
     register,
     login,
     getMe,
-    logout
+    logout,
+    updateProfile,
+    updatePassword
 };
