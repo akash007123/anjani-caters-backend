@@ -243,7 +243,8 @@ exports.createBlog = async (req, res) => {
       authorName,
       authorEmail,
       category,
-      status
+      status,
+      readingTime
     } = req.body;
 
     // Validation
@@ -292,10 +293,14 @@ exports.createBlog = async (req, res) => {
        .replace(/(^-|-$)/g, '');
 
      const blog = new Blog(blogData);
-    
-    // Calculate reading time
-    blog.calculateReadingTime();
-    
+
+    // Set reading time - use provided value or calculate
+    if (readingTime !== undefined && readingTime !== null) {
+      blog.readingTime = readingTime;
+    } else {
+      blog.calculateReadingTime();
+    }
+
     const savedBlog = await blog.save();
 
     res.status(201).json({
@@ -351,8 +356,11 @@ exports.updateBlog = async (req, res) => {
       return res.status(404).json({ error: "Blog not found" });
     }
 
-    // If content or sections were updated, recalculate reading time
-    if (updateData.content || updateData.sections) {
+    // Handle reading time - use provided value, or recalculate if content/sections changed
+    if (updateData.readingTime !== undefined) {
+      // Use the provided reading time
+    } else if (updateData.content || updateData.sections) {
+      // Recalculate if content or sections were updated
       const wordsPerMinute = 200;
       const textLength = (updateData.content + (updateData.sections?.map(s => s.sectionContent).join(' ') || '')).split(' ').length;
       updateData.readingTime = Math.ceil(textLength / wordsPerMinute);
