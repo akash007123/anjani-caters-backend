@@ -1,11 +1,13 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const path = require("path");
 const connectDB = require("./config/db");
 const contactRoutes = require("./routes/contactRoutes");
 const quoteRoutes = require("./routes/quoteRoutes");
 const authRoutes = require("./routes/authRoutes");
 const settingsRoutes = require("./routes/settingsRoutes");
+const blogRoutes = require("./routes/blogRoutes");
 
 dotenv.config();
 connectDB();
@@ -35,6 +37,12 @@ console.log('Auth routes mounted successfully');
 console.log('Mounting settings routes at /api/settings');
 app.use("/api/settings", settingsRoutes);
 console.log('Settings routes mounted successfully');
+console.log('Mounting blog routes at /api/blog');
+app.use("/api/blog", blogRoutes);
+console.log('Blog routes mounted successfully');
+
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get("/", (req, res) => {
   res.json({ message: "Contact API is running...", authRoutes: "mounted at /api/auth" });
