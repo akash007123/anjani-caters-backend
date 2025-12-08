@@ -69,9 +69,14 @@ const BlogSchema = new mongoose.Schema(
 );
 
 // Virtual for formatted date
-BlogSchema.virtual('formattedDate').get(function() {
-  return this.publishedAt ? this.publishedAt.toLocaleDateString() : this.createdAt.toLocaleDateString();
+BlogSchema.virtual('formattedDate').get(function () {
+  const date = this.publishedAt || this.createdAt;
+
+  if (!date || !(date instanceof Date)) return null;
+
+  return date.toLocaleDateString();
 });
+
 
 // Virtual for URL path
 BlogSchema.virtual('url').get(function() {
