@@ -1,5 +1,6 @@
 const Comment = require("../models/Comment");
 const Blog = require("../models/Blog");
+const { sendCommentConfirmation } = require("../utils/mailer");
 
 // Create a new comment
 exports.createComment = async (req, res) => {
@@ -33,6 +34,59 @@ exports.createComment = async (req, res) => {
 
     // Populate blog info for response
     await savedComment.populate('blog', 'title slug');
+
+    // Fetch related blogs for email recommendations
+    let relatedBlogs = [];
+    try {
+      // Get the current blog to find related ones
+      const currentBlog = await Blog.findById(savedComment.blog).select('category tags').lean();
+
+      if (currentBlog) {
+        // Find blogs with same category or shared tags
+        const query = {
+          status: 'Published',
+          _id: { $ne: savedComment.blog }, // Exclude current blog
+          $or: [
+            { category: currentBlog.category }, // Same category
+            { tags: { $in: currentBlog.tags } } // Shared tags
+          ]
+        };
+
+        relatedBlogs = await Blog.find(query)
+          .sort({ publishedAt: -1 })
+          .limit(4)
+          .select('title slug excerpt publishedAt')
+          .lean();
+      }
+
+      // If no related blogs found, fall back to recent blogs
+      if (relatedBlogs.length === 0) {
+        relatedBlogs = await Blog.find({
+          status: 'Published',
+          _id: { $ne: savedComment.blog }
+        })
+        .sort({ publishedAt: -1 })
+        .limit(4)
+        .select('title slug excerpt publishedAt')
+        .lean();
+      }
+    } catch (blogError) {
+      console.error('Error fetching related blogs for email:', blogError);
+      // Continue without blog recommendations if fetch fails
+    }
+
+    // Send confirmation email to the commenter
+    try {
+      await sendCommentConfirmation({
+        fullName: newComment.fullName,
+        email: newComment.email,
+        comment: newComment.comment,
+        relatedBlogs: relatedBlogs
+      });
+    } catch (emailError) {
+      console.error('Error sending comment confirmation email:', emailError);
+      // Don't fail the comment creation if email fails
+    }
 
     res.status(201).json({
       success: true,

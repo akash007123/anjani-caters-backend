@@ -114,4 +114,107 @@ const sendMail = async (formData) => {
   });
 };
 
-module.exports = sendMail;
+const sendCommentConfirmation = async (commentData) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  // Send confirmation email to the commenter
+  await transporter.sendMail({
+    from: `"Anjani Caters Blog" <${process.env.EMAIL_USER}>`,
+    to: commentData.email,
+    subject: "Thank you for your comment on Anjani Caters Blog!",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 28px;">Thank You!</h1>
+          <p style="color: white; margin: 15px 0 0 0; font-size: 18px;">Your comment has been received</p>
+        </div>
+
+        <div style="padding: 30px; background-color: #f8f9fa;">
+          <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h2 style="color: #333; margin-top: 0;">Hello ${commentData.fullName},</h2>
+
+            <p style="color: #666; line-height: 1.6; margin: 20px 0;">
+              Thank you for sharing your thoughts on our blog! We appreciate you taking the time to leave a comment.
+            </p>
+
+            <div style="background: #e8f4f8; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #17a2b8;">
+              <h3 style="color: #17a2b8; margin-top: 0;">Your Comment:</h3>
+              <div style="background: white; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                <p style="margin: 0; line-height: 1.6; color: #666;">"${commentData.comment}"</p>
+              </div>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #333; margin-top: 0;">What happens next?</h3>
+              <ul style="color: #666; margin: 10px 0; padding-left: 20px;">
+                <li>Your comment will be reviewed by our team</li>
+                <li>Once approved, it will appear on the blog post</li>
+                <li>We may respond to your comment if appropriate</li>
+              </ul>
+            </div>
+
+
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #333; margin-top: 0;">Read more latest and relatable blogs</h3>
+              ${commentData.relatedBlogs && commentData.relatedBlogs.length > 0 ? `
+                <div style="margin-top: 15px;">
+                  ${commentData.relatedBlogs.map(blog => `
+                    <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e9ecef;">
+                      <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/blog"
+                         style="color: #667eea; text-decoration: none; font-weight: 500;">
+                        ${blog.title}
+                      </a>
+                      <p style="margin: 5px 0 0 0; color: #666; font-size: 14px; line-height: 1.4;">
+                        ${blog.excerpt ? blog.excerpt.substring(0, 100) + '...' : ''}
+                      </p>
+                      <small style="color: #999; font-size: 12px;">
+                        ${blog.publishedAt ? new Date(blog.publishedAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        }) : ''}
+                      </small>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : `
+                <p style="margin: 10px 0; color: #666; font-size: 14px;">
+                  Check out our blog for more interesting articles!
+                </p>
+              `}
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <p style="margin: 0; color: #666; font-size: 14px;">Follow us for more updates:</p>
+                <div style="margin-top: 10px;">
+                  <a href="https://facebook.com/anjanicaters" style="display: inline-block; margin: 0 10px; color: #667eea; text-decoration: none;">📘 Facebook</a>
+                  <a href="https://instagram.com/anjanicaters" style="display: inline-block; margin: 0 10px; color: #667eea; text-decoration: none;">📷 Instagram</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #333; color: white; padding: 20px; text-align: center;">
+          <h3 style="margin: 0 0 10px 0; color: white;">Anjani Caters</h3>
+          <p style="margin: 5px 0; font-size: 14px;">Premium Catering Services for Extraordinary Events</p>
+          <p style="margin: 5px 0; font-size: 12px; color: #ccc;">
+            📧 akashraikwar763@gmail.com | 📞 +91 96855 33878 | 📍 Chhatarpur, Madhya Pradesh, India
+          </p>
+          <p style="margin: 15px 0 0 0; font-size: 11px; color: #999;">
+            This is an automated confirmation. Please do not reply to this email.
+          </p>
+        </div>
+      </div>
+    `,
+  });
+};
+
+module.exports = { sendMail, sendCommentConfirmation };
