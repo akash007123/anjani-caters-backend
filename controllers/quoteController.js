@@ -20,8 +20,9 @@ exports.submitQuote = async (req, res) => {
     } = req.body;
 
     if (!name || !email || !eventType || !eventDate || !guestCount) {
-      return res.status(400).json({ 
-        error: "Name, Email, Event Type, Event Date, and Guest Count are required." 
+      return res.status(400).json({
+        success: false,
+        message: "Name, Email, Event Type, Event Date, and Guest Count are required."
       });
     }
 

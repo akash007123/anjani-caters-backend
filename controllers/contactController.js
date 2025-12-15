@@ -10,7 +10,7 @@ exports.submitContact = async (req, res) => {
     const { name, email, phone, message } = req.body;
 
     if (!name || !email || !message) {
-      return res.status(400).json({ error: "Name, Email, and Message are required." });
+      return res.status(400).json({ success: false, message: "Name, Email, and Message are required." });
     }
 
     const saved = await Contact.create({ name, email, phone, message });
