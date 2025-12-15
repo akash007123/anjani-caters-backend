@@ -1,5 +1,5 @@
 const Contact = require("../models/Contact");
-const sendMail = require("../utils/mailer");
+const { sendMail } = require("../utils/mailer");
 
 exports.healthCheck = (req, res) => {
   res.status(200).json({ status: "online" });
