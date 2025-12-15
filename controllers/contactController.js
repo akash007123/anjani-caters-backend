@@ -15,13 +15,10 @@ exports.submitContact = async (req, res) => {
 
     const saved = await Contact.create({ name, email, phone, message });
 
-    // Try to send email, but don't fail if it doesn't work
-    try {
-      await sendMail({ name, email, phone, message });
-    } catch (emailError) {
+    // Send email asynchronously (don't wait for it)
+    sendMail({ name, email, phone, message }).catch(emailError => {
       console.error("Email sending failed:", emailError);
-      // Continue without failing the request
-    }
+    });
 
     res.status(201).json({
       success: true,

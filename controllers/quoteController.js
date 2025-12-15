@@ -55,25 +55,22 @@ exports.submitQuote = async (req, res) => {
 
     const saved = await Quote.create(quoteData);
 
-    // Try to send emails, but don't fail if it doesn't work
-    try {
-      await sendQuoteMail({
-        name,
-        email,
-        phone,
-        eventType,
-        eventDate,
-        guestCount,
-        venue,
-        budget,
-        requirements,
-        id: saved._id,
-        priority
-      });
-    } catch (emailError) {
+    // Send emails asynchronously (don't wait for it)
+    sendQuoteMail({
+      name,
+      email,
+      phone,
+      eventType,
+      eventDate,
+      guestCount,
+      venue,
+      budget,
+      requirements,
+      id: saved._id,
+      priority
+    }).catch(emailError => {
       console.error("Quote email sending failed:", emailError);
-      // Continue without failing the request
-    }
+    });
 
     res.status(201).json({
       success: true,
