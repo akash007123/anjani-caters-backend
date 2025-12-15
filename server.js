@@ -10,6 +10,7 @@ const settingsRoutes = require("./routes/settingsRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const testimonialRoutes = require("./routes/testimonialRoutes");
+const galleryRoutes = require("./routes/galleryRoutes");
 
 dotenv.config();
 connectDB();
@@ -48,6 +49,9 @@ console.log('Comment routes mounted successfully');
 console.log('Mounting testimonial routes at /api/testimonials');
 app.use("/api/testimonials", testimonialRoutes);
 console.log('Testimonial routes mounted successfully');
+console.log('Mounting gallery routes at /api/gallery');
+app.use("/api/gallery", galleryRoutes);
+console.log('Gallery routes mounted successfully');
 
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

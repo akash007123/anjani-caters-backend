@@ -9,6 +9,7 @@ const generateToken = (id) => {
     });
 };
 
+// Auth
 // @desc    Register new user
 // @route   POST /api/auth/register
 // @access  Public (should be restricted in production)
