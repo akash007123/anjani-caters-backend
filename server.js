@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('./middleware/cors');
 const connectDB = require('./config/db');
 const contactRoutes = require('./routes/contactRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/contacts', contactRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
