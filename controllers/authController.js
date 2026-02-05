@@ -251,3 +251,155 @@ exports.refreshToken = async (req, res) => {
     });
   }
 };
+
+// @desc    Get user by ID (admin only)
+// @route   GET /api/auth/users/:id
+// @access  Private/Admin
+exports.getUserById = async (req, res) => {
+  try {
+    const adminUser = await AdminUser.findById(req.params.id).select('-password');
+
+    if (!adminUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        adminUser
+      }
+    });
+  } catch (error) {
+    console.error('Get user by ID error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching user data',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Update user by ID (admin only)
+// @route   PUT /api/auth/users/:id
+// @access  Private/Admin
+exports.updateUser = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      username,
+      mobile,
+      dateOfBirth,
+      gender,
+      address,
+      country,
+      state,
+      city,
+      role,
+      profilePic
+    } = req.body;
+
+    // Check if user exists
+    let adminUser = await AdminUser.findById(req.params.id);
+
+    if (!adminUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if email/username/mobile is already taken by another user
+    const existingUser = await AdminUser.findOne({
+      $or: [
+        { email: email.toLowerCase(), _id: { $ne: req.params.id } },
+        { username: username, _id: { $ne: req.params.id } },
+        { mobile: mobile, _id: { $ne: req.params.id } }
+      ]
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'User with this email, username, or mobile already exists'
+      });
+    }
+
+    // Update user
+    adminUser = await AdminUser.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        email,
+        username,
+        mobile,
+        dateOfBirth,
+        gender,
+        address,
+        country,
+        state,
+        city,
+        role,
+        profilePic
+      },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    res.status(200).json({
+      success: true,
+      data: {
+        adminUser
+      },
+      message: 'User updated successfully'
+    });
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating user',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Delete user by ID (admin only)
+// @route   DELETE /api/auth/users/:id
+// @access  Private/Admin
+exports.deleteUser = async (req, res) => {
+  try {
+    // Check if user exists
+    const adminUser = await AdminUser.findById(req.params.id);
+
+    if (!adminUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Prevent admin from deleting themselves
+    if (adminUser._id.toString() === req.user._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot delete your own account'
+      });
+    }
+
+    await AdminUser.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: 'User deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting user',
+      error: error.message
+    });
+  }
+};
