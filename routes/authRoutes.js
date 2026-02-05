@@ -20,6 +20,25 @@ router.get('/me', getMe);
 router.post('/logout', logout);
 
 // Role-based routes (only admin can manage other users)
+router.get('/users', protect, authorize('admin', 'sub-admin'), async (req, res) => {
+  try {
+    const AdminUser = require('../models/AdminUser');
+    const users = await AdminUser.find().select('-password').sort({ createdAt: -1 });
+    
+    res.status(200).json({
+      success: true,
+      data: users
+    });
+  } catch (error) {
+    console.error('Get users error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching users',
+      error: error.message
+    });
+  }
+});
+
 router.patch('/update-role/:id', authorize('admin'), async (req, res) => {
   try {
     const AdminUser = require('../models/AdminUser');
