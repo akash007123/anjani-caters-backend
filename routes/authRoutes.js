@@ -8,7 +8,9 @@ const {
   refreshToken,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
+  updateProfile,
+  updatePassword
 } = require('../controllers/authController');
 const { protect, authorize } = require('../middleware/auth');
 
@@ -21,6 +23,8 @@ router.post('/refresh-token', refreshToken);
 router.use(protect);
 router.get('/me', getMe);
 router.post('/logout', logout);
+router.put('/profile', updateProfile);
+router.put('/password', updatePassword);
 
 // Role-based routes (only admin can manage other users)
 router.get('/users', protect, authorize('admin', 'sub-admin'), async (req, res) => {

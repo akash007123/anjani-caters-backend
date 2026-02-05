@@ -403,3 +403,107 @@ exports.deleteUser = async (req, res) => {
     });
   }
 };
+
+// @desc    Update current user's profile
+// @route   PUT /api/auth/profile
+// @access  Private
+exports.updateProfile = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      username,
+      mobile,
+      dateOfBirth,
+      gender,
+      address,
+      country,
+      state,
+      city,
+      profilePic
+    } = req.body;
+
+    // Check if email/username/mobile is already taken by another user
+    const existingUser = await AdminUser.findOne({
+      $or: [
+        { email: email.toLowerCase(), _id: { $ne: req.user._id } },
+        { username: username, _id: { $ne: req.user._id } },
+        { mobile: mobile, _id: { $ne: req.user._id } }
+      ]
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'User with this email, username, or mobile already exists'
+      });
+    }
+
+    // Update user
+    const adminUser = await AdminUser.findByIdAndUpdate(
+      req.user._id,
+      {
+        name,
+        email,
+        username,
+        mobile,
+        dateOfBirth,
+        gender,
+        address,
+        country,
+        state,
+        city,
+        profilePic
+      },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    res.status(200).json({
+      success: true,
+      data: {
+        adminUser
+      },
+      message: 'Profile updated successfully'
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating profile',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Update current user's password
+// @route   PUT /api/auth/password
+// @access  Private
+exports.updatePassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+
+    if (!password || password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters'
+      });
+    }
+
+    // Update password (will be hashed by pre-save middleware)
+    const adminUser = await AdminUser.findById(req.user._id).select('+password');
+    adminUser.password = password;
+    await adminUser.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password updated successfully'
+    });
+  } catch (error) {
+    console.error('Update password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating password',
+      error: error.message
+    });
+  }
+};
