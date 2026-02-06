@@ -9,7 +9,7 @@ const getEmployees = async (req, res) => {
     
     let query = {};
     
-    if (department) {
+    if (department && department !== 'all') {
       query.department = department;
     }
     
@@ -21,7 +21,7 @@ const getEmployees = async (req, res) => {
       query.isActive = isActive === 'true';
     }
     
-    if (search) {
+    if (search && search.trim()) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
         { email: { $regex: search, $options: 'i' } },
