@@ -4,6 +4,7 @@ const cors = require('./middleware/cors');
 const connectDB = require('./config/db');
 const contactRoutes = require('./routes/contactRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const employeeRoutes = require('./routes/employeeRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
@@ -37,6 +38,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/employees', employeeRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
