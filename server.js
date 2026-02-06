@@ -6,6 +6,7 @@ const contactRoutes = require('./routes/contactRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const authRoutes = require('./routes/authRoutes');
+const customBookingRoutes = require('./routes/customBookingRoutes');
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/employees', employeeRoutes);
+app.use('/api/custom-bookings', customBookingRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
