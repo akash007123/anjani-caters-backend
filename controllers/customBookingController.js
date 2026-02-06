@@ -50,10 +50,21 @@ const createCustomBooking = async (req, res) => {
 // @access  Private (admin)
 const getAllCustomBookings = async (req, res) => {
   try {
-    const { status, page = 1, limit = 10, sort = '-createdAt' } = req.query;
+    const { status, fromDate, toDate, page = 1, limit = 10, sort = '-createdAt' } = req.query;
 
     const query = {};
     if (status) query.status = status;
+
+    // Date range filter
+    if (fromDate || toDate) {
+      query.eventDate = {};
+      if (fromDate) {
+        query.eventDate.$gte = new Date(fromDate);
+      }
+      if (toDate) {
+        query.eventDate.$lte = new Date(toDate);
+      }
+    }
 
     const customBookings = await CustomBooking.find(query)
       .sort(sort)
