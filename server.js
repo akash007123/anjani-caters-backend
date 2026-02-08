@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const cors = require('./middleware/cors');
 const connectDB = require('./config/db');
 const contactRoutes = require('./routes/contactRoutes');
@@ -9,6 +10,7 @@ const authRoutes = require('./routes/authRoutes');
 const customBookingRoutes = require('./routes/customBookingRoutes');
 const subscriberRoutes = require('./routes/subscriberRoutes');
 const testimonialRoutes = require('./routes/testimonialRoutes');
+const galleryRoutes = require('./routes/galleryRoutes');
 
 const app = express();
 
@@ -34,8 +36,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Serve uploaded files (under /api to match API URL structure)
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -45,6 +50,7 @@ app.use('/api/employees', employeeRoutes);
 app.use('/api/custom-bookings', customBookingRoutes);
 app.use('/api/subscribers', subscriberRoutes);
 app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
