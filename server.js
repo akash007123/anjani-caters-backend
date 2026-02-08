@@ -8,6 +8,7 @@ const employeeRoutes = require('./routes/employeeRoutes');
 const authRoutes = require('./routes/authRoutes');
 const customBookingRoutes = require('./routes/customBookingRoutes');
 const subscriberRoutes = require('./routes/subscriberRoutes');
+const testimonialRoutes = require('./routes/testimonialRoutes');
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/custom-bookings', customBookingRoutes);
 app.use('/api/subscribers', subscriberRoutes);
+app.use('/api/testimonials', testimonialRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
