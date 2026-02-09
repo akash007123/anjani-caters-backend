@@ -11,6 +11,7 @@ const customBookingRoutes = require('./routes/customBookingRoutes');
 const subscriberRoutes = require('./routes/subscriberRoutes');
 const testimonialRoutes = require('./routes/testimonialRoutes');
 const galleryRoutes = require('./routes/galleryRoutes');
+const blogRoutes = require('./routes/blogRoutes');
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use('/api/custom-bookings', customBookingRoutes);
 app.use('/api/subscribers', subscriberRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/gallery', galleryRoutes);
+app.use('/api/blogs', blogRoutes);
 
 // Health check route
 app.get('/health', (req, res) => {
