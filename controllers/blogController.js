@@ -404,7 +404,7 @@ async function uploadImage(req, res) {
         return res.status(400).json({ success: false, message: 'No file uploaded' });
       }
       
-      const imageUrl = `${req.protocol}://${req.get('host')}/${req.file.path}`;
+      const imageUrl = `${req.protocol}://${req.get('host')}/api/${req.file.path}`;
       
       res.status(200).json({
         success: true,
